@@ -1,38 +1,43 @@
+<!--
+Copyright (C) 2013 173210 <root.3.173210@live.com>
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License as
+published by the Free Software Foundation; either version 3 of
+the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+-->
+
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".MainActivity" >
 
     <ToggleButton
-        android:id="@+id/tv_toggle"
+        android:id="@+id/toggleButton"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:textOff="テレビ機能制限を有効にする"
-        android:textOn="テレビ機能制限を無効にする" />
-
-    <ToggleButton
-        android:id="@+id/slideshow_toggle"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/tv_toggle"
-        android:layout_below="@+id/tv_toggle"
-        android:textOff="スライドショー機能制限を有効にする"
-        android:textOn="スライドショー機能制限を無効にする" />
+        android:textOff="@string/enable_lock"
+        android:textOn="@string/disable_lock" />
 
     <TextView
-        android:id="@+id/textView1"
+        android:id="@+id/discribe_textView"
+        android:textAppearance="?android:attr/textAppearanceMedium"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/slideshow_toggle"
         android:layout_alignParentBottom="true"
         android:autoLink="web"
-        android:text="これはPhotovision TV 202HWの機能制限解除を行う非公式のツールです。\n作者はこれを使用することによるいかなる損害の責任を一切負いません。\n作者 : 173210\n作者のブログ : http://173210.t15.org\nソースコード(GitHub) : \nhttps://github.com/173210/photovision_tv_function_unlocker" />
+        android:text="@string/discribe" />
 
 </RelativeLayout>
