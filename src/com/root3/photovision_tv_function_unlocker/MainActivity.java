@@ -20,6 +20,7 @@ package com.root3.photovision_tv_function_unlocker;
 
 import android.app.Activity;
 import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
@@ -29,27 +30,28 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ToggleButton;
 
 public class MainActivity extends Activity implements OnCheckedChangeListener {
-	int locked;
-	static Uri URI_PARAMS_TABLE = Uri.parse("content://com.hw.dpf.provider.setting/param_table");
-	ToggleButton toggleButton;
+	private int locked;
+	private static String strValue = "strValue";
+	private static String none_alert_mode = "none_alert_mode";
+	private static String selectionArgs[] = {none_alert_mode};
+	private static Uri URI_PARAMS_TABLE = Uri.parse("content://com.hw.dpf.provider.setting/param_table");
+	private ToggleButton toggleButton;
+	private ContentResolver contentresolver;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
+        contentresolver = getContentResolver();
+
 		try {
-			Cursor cursor;
-			cursor = null;
+			Cursor cursor = null;
 			Uri uri = URI_PARAMS_TABLE;
-			String as[] = new String[1];
-			as[0] = "strValue";
-			String as1[] = new String[1];
-			as1[0] = "none_alert_mode";
-			cursor = getContentResolver().query(uri, as, "strKey=?", as1, null);
+			String projection[] = {strValue};
+			cursor = contentresolver.query(uri, projection, "strKey=?", selectionArgs, null);
 			locked = cursor.getInt(0);
-			if(cursor != null)
-				cursor.close();
+			if(cursor != null) cursor.close();
 			if(locked != 1 && locked != 0)
 				locked = 1;
 		} catch (Exception e) {
@@ -65,22 +67,19 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
 	@Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         ContentValues contentvalues;
-        ContentResolver contentresolver;
-        String as[];
         if (locked == 0) locked = 1;
         else locked = 0;
         contentvalues = new ContentValues();
-        contentvalues.put("strKey", "none_alert_mode");
-        contentvalues.put("strValue", String.valueOf(locked));
-        contentresolver = getContentResolver();
-        as = new String[1];
-        as[0] = "none_alert_mode";
-        if(contentresolver.update(URI_PARAMS_TABLE, contentvalues, "strKey=?", as) <= 0)
-            getContentResolver().insert(URI_PARAMS_TABLE, contentvalues);
-        else  {
-            if (locked == 0) locked = 1;
-            else locked = 0;
+        contentvalues.put("strKey", none_alert_mode);
+        contentvalues.put(strValue, String.valueOf(locked));
+        if (contentresolver.update(URI_PARAMS_TABLE, contentvalues, "strKey=?", selectionArgs) <= 0) {
+        	Uri uri = contentresolver.insert(URI_PARAMS_TABLE, contentvalues);
+        	if (uri == null || ContentUris.parseId(uri) == 0){
+            	if (locked == 0) locked = 1;
+            	else locked = 0;
+        	}
         }
+
         if (locked == 0) toggleButton.setChecked(false);
         else toggleButton.setChecked(true);
     }
