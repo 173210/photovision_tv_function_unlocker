@@ -30,7 +30,7 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ToggleButton;
 
 public class MainActivity extends Activity implements OnCheckedChangeListener {
-	private int locked;
+	private int unlocked;
 	private static String strValue = "strValue";
 	private static String none_alert_mode = "none_alert_mode";
 	private static String selectionArgs[] = {none_alert_mode};
@@ -50,37 +50,38 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
 			Uri uri = URI_PARAMS_TABLE;
 			String projection[] = {strValue};
 			cursor = contentresolver.query(uri, projection, "strKey=?", selectionArgs, null);
-			locked = cursor.getInt(0);
+			cursor.moveToFirst();
+			unlocked = cursor.getInt(0);
 			if(cursor != null) cursor.close();
-			if(locked != 1 && locked != 0)
-				locked = 1;
+			if(unlocked != 1 && unlocked != 0)
+				unlocked = 0;
 		} catch (Exception e) {
-			locked = 1;
+			unlocked = 0;
 		}
 
 		toggleButton = (ToggleButton)findViewById(R.id.toggleButton);
-        if (locked == 0) toggleButton.setChecked(false);
-        else toggleButton.setChecked(true);
+        if (unlocked == 0) toggleButton.setChecked(true);
+        else toggleButton.setChecked(false);
 		toggleButton.setOnCheckedChangeListener(this);
 	}
 
 	@Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         ContentValues contentvalues;
-        if (locked == 0) locked = 1;
-        else locked = 0;
+        if (unlocked == 0) unlocked = 1;
+        else unlocked = 0;
         contentvalues = new ContentValues();
         contentvalues.put("strKey", none_alert_mode);
-        contentvalues.put(strValue, String.valueOf(locked));
+        contentvalues.put(strValue, String.valueOf(unlocked));
         if (contentresolver.update(URI_PARAMS_TABLE, contentvalues, "strKey=?", selectionArgs) <= 0) {
         	Uri uri = contentresolver.insert(URI_PARAMS_TABLE, contentvalues);
         	if (uri == null || ContentUris.parseId(uri) == 0){
-            	if (locked == 0) locked = 1;
-            	else locked = 0;
+            	if (unlocked == 0) unlocked = 1;
+            	else unlocked = 0;
         	}
         }
 
-        if (locked == 0) toggleButton.setChecked(false);
-        else toggleButton.setChecked(true);
+        if (unlocked == 0) toggleButton.setChecked(true);
+        else toggleButton.setChecked(false);
     }
 }
