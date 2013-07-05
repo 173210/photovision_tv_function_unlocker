@@ -44,44 +44,38 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
 		setContentView(R.layout.activity_main);
 
         contentresolver = getContentResolver();
+		String projection[] = {strValue};
 
 		try {
-			Cursor cursor = null;
-			Uri uri = URI_PARAMS_TABLE;
-			String projection[] = {strValue};
-			cursor = contentresolver.query(uri, projection, "strKey=?", selectionArgs, null);
-			cursor.moveToFirst();
-			unlocked = cursor.getInt(0);
-			if(cursor != null) cursor.close();
-			if(unlocked != 1 && unlocked != 0)
-				unlocked = 0;
+			Cursor cursor = contentresolver.query(URI_PARAMS_TABLE, projection, "strKey=?", selectionArgs, null);
+			if (cursor != null) {
+				cursor.moveToFirst();
+				unlocked = cursor.getInt(0);
+				cursor.close();
+				if(unlocked != 1) unlocked = 0;
+			}
 		} catch (Exception e) {
 			unlocked = 0;
 		}
 
 		toggleButton = (ToggleButton)findViewById(R.id.toggleButton);
-        if (unlocked == 0) toggleButton.setChecked(true);
-        else toggleButton.setChecked(false);
+        toggleButton.setChecked(unlocked == 0);
 		toggleButton.setOnCheckedChangeListener(this);
 	}
 
 	@Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         ContentValues contentvalues;
-        if (unlocked == 0) unlocked = 1;
-        else unlocked = 0;
+        unlocked = unlocked == 0 ? 1 : 0;
         contentvalues = new ContentValues();
         contentvalues.put("strKey", none_alert_mode);
         contentvalues.put(strValue, String.valueOf(unlocked));
         if (contentresolver.update(URI_PARAMS_TABLE, contentvalues, "strKey=?", selectionArgs) <= 0) {
         	Uri uri = contentresolver.insert(URI_PARAMS_TABLE, contentvalues);
-        	if (uri == null || ContentUris.parseId(uri) == 0){
-            	if (unlocked == 0) unlocked = 1;
-            	else unlocked = 0;
-        	}
+        	if (uri == null || ContentUris.parseId(uri) == 0)
+        		unlocked = unlocked == 0 ? 1 : 0;
         }
 
-        if (unlocked == 0) toggleButton.setChecked(true);
-        else toggleButton.setChecked(false);
+        toggleButton.setChecked(unlocked == 0);
     }
 }
